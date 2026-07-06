@@ -82,7 +82,7 @@ export default function PredictionForm() {
                 name="Gender"
                 value={formData.Gender}
                 onChange={handleChange}
-                className="w-full px-3 py-1.5 text-sm border border-slate-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                className="w-full px-3 py-1.5 pr-8 text-sm border border-slate-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%2364748b%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[position:right_0.5rem_center] bg-no-repeat text-slate-700"
               >
                 <option value="Female">Female</option>
                 <option value="Male">Male</option>
@@ -95,7 +95,7 @@ export default function PredictionForm() {
                 name="Geography"
                 value={formData.Geography}
                 onChange={handleChange}
-                className="w-full px-3 py-1.5 text-sm border border-slate-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white"
+                className="w-full px-3 py-1.5 pr-8 text-sm border border-slate-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%2364748b%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[position:right_0.5rem_center] bg-no-repeat text-slate-700"
               >
                 <option value="France">France</option>
                 <option value="Germany">Germany</option>
@@ -124,7 +124,7 @@ export default function PredictionForm() {
               <label className="text-xs font-medium text-slate-700 mb-1">Account Balance ($)</label>
               <input
                 type="number"
-                step="0.01"
+                step="10000"
                 name="Balance"
                 value={formData.Balance}
                 onChange={handleChange}
@@ -137,7 +137,7 @@ export default function PredictionForm() {
               <label className="text-xs font-medium text-slate-700 mb-1">Estimated Salary ($)</label>
               <input
                 type="number"
-                step="0.01"
+                step="10000"
                 name="EstimatedSalary"
                 value={formData.EstimatedSalary}
                 onChange={handleChange}
