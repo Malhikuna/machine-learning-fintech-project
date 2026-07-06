@@ -1,6 +1,66 @@
 // src/components/PredictionForm.tsx
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { predictChurn, type CustomerData, type PredictionResponse } from "../services/api";
+
+interface CustomSelectProps {
+  label: string;
+  name: string;
+  value: string;
+  options: string[];
+  onChange: (name: string, value: string) => void;
+}
+
+const CustomSelect: React.FC<CustomSelectProps> = ({ label, name, value, options, onChange }) => {
+  const [isOpen, setIsOpen] = useState(false);
+  const selectRef = useRef<HTMLDivElement>(null);
+  
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (selectRef.current && !selectRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  return (
+    <div className="flex flex-col relative" ref={selectRef}>
+      <label className="text-xs font-medium text-slate-700 mb-1">{label}</label>
+      <div 
+        className={`w-full px-3 py-1.5 text-sm border rounded shadow-sm bg-white cursor-pointer relative transition-all duration-200 select-none ${isOpen ? 'border-blue-500 ring-1 ring-blue-500' : 'border-slate-300 hover:border-slate-400'}`}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span className="block truncate text-slate-700">{value}</span>
+        <span className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+          <svg className={`w-4 h-4 text-slate-400 transition-transform duration-200 ${isOpen ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7"></path></svg>
+        </span>
+      </div>
+      
+      <div className={`absolute z-20 w-full top-full mt-1 bg-white border border-slate-200 rounded-md shadow-xl transition-all duration-200 origin-top ${isOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+        <ul className="py-1 overflow-auto text-sm max-h-60">
+          {options.map((option) => (
+            <li 
+              key={option}
+              className={`px-3 py-1.5 cursor-pointer select-none transition-colors duration-150 ${value === option ? 'bg-blue-50 text-blue-700 font-medium' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'}`}
+              onClick={() => {
+                onChange(name, option);
+                setIsOpen(false);
+              }}
+            >
+              <div className="flex items-center justify-between">
+                <span>{option}</span>
+                {value === option && (
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path></svg>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  );
+};
 
 export default function PredictionForm() {
   const [formData, setFormData] = useState<CustomerData>({
@@ -18,6 +78,13 @@ export default function PredictionForm() {
 
   const [result, setResult] = useState<PredictionResponse | null>(null);
   const [loading, setLoading] = useState(false);
+
+  const handleCustomSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -76,32 +143,21 @@ export default function PredictionForm() {
               />
             </div>
 
-            <div className="flex flex-col">
-              <label className="text-xs font-medium text-slate-700 mb-1">Gender</label>
-              <select
-                name="Gender"
-                value={formData.Gender}
-                onChange={handleChange}
-                className="w-full px-3 py-1.5 pr-8 text-sm border border-slate-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%2364748b%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[position:right_0.5rem_center] bg-no-repeat text-slate-700"
-              >
-                <option value="Female">Female</option>
-                <option value="Male">Male</option>
-              </select>
-            </div>
+            <CustomSelect
+              label="Gender"
+              name="Gender"
+              value={formData.Gender}
+              options={["Female", "Male"]}
+              onChange={handleCustomSelectChange}
+            />
 
-            <div className="flex flex-col">
-              <label className="text-xs font-medium text-slate-700 mb-1">Geography</label>
-              <select
-                name="Geography"
-                value={formData.Geography}
-                onChange={handleChange}
-                className="w-full px-3 py-1.5 pr-8 text-sm border border-slate-300 rounded shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500 bg-white appearance-none cursor-pointer bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%2020%2020%22%20fill%3D%22%2364748b%22%3E%3Cpath%20fill-rule%3D%22evenodd%22%20d%3D%22M5.293%207.293a1%201%200%20011.414%200L10%2010.586l3.293-3.293a1%201%200%20111.414%201.414l-4%204a1%201%200%2001-1.414%200l-4-4a1%201%200%20010-1.414z%22%20clip-rule%3D%22evenodd%22%2F%3E%3C%2Fsvg%3E')] bg-[length:1.25rem_1.25rem] bg-[position:right_0.5rem_center] bg-no-repeat text-slate-700"
-              >
-                <option value="France">France</option>
-                <option value="Germany">Germany</option>
-                <option value="Spain">Spain</option>
-              </select>
-            </div>
+            <CustomSelect
+              label="Geography"
+              name="Geography"
+              value={formData.Geography}
+              options={["France", "Germany", "Spain"]}
+              onChange={handleCustomSelectChange}
+            />
 
             {/* Account Metrics Group */}
             <div className="md:col-span-2 border-b border-slate-100 pb-2 mb-2 mt-2">
